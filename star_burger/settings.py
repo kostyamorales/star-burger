@@ -41,6 +41,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 
 ROOT_URLCONF = 'star_burger.urls'
@@ -77,6 +78,14 @@ TEMPLATES = [
         },
     },
 ]
+
+ROLLBAR = {
+    'access_token': env('POST_SERVER_ITEM_ACCESS_TOKEN'),
+    'environment': 'development' if DEBUG else 'production',
+    'branch': 'master',
+    'root': BASE_DIR,
+    'patch_debugview': False,
+}
 
 WSGI_APPLICATION = 'star_burger.wsgi.application'
 

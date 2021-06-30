@@ -6,8 +6,6 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
-from django.db.models.query import Prefetch
-
 from foodcartapp.models import Product, Restaurant, Order
 
 
@@ -67,7 +65,6 @@ def is_manager(user):
 def view_products(request):
     restaurants = list(Restaurant.objects.order_by('name'))
     products = list(Product.objects.prefetch_related('menu_items'))
-
     default_availability = {restaurant.id: False for restaurant in restaurants}
     products_with_restaurants = []
     for product in products:
@@ -76,11 +73,9 @@ def view_products(request):
             **{item.restaurant_id: item.availability for item in product.menu_items.all()},
         }
         orderer_availability = [availability[restaurant.id] for restaurant in restaurants]
-
         products_with_restaurants.append(
             (product, orderer_availability)
         )
-
     return render(request, template_name="products_list.html", context={
         'products_with_restaurants': products_with_restaurants,
         'restaurants': restaurants,
